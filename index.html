@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Tentmaker Open Capstone 1 - Group roster, group boards, leader channels and history."
+    >
+
+    <title>Tentmaker Open — Capstone 1</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-logo">T</div>
+
+                <div>
+                    <h1>Tentmaker Open</h1>
+                    <p>Capstone 1</p>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <p class="sidebar-label">Navigation</p>
+
+                <nav class="main-nav" aria-label="Main navigation">
+
+                    <button
+                        type="button"
+                        class="nav-button active"
+                        data-view="groups"
+                        id="groupsNavButton"
+                    >
+                        <span>👥</span>
+                        <span>Groups</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="nav-button"
+                        data-view="leaders"
+                        id="leadersNavButton"
+                    >
+                        <span>📢</span>
+                        <span>Leader Channels</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="nav-button"
+                        data-view="history"
+                        id="historyNavButton"
+                    >
+                        <span>🕘</span>
+                        <span>History</span>
+                    </button>
+
+                </nav>
+            </div>
+
+            <!-- Group selector -->
+            <div class="sidebar-section" id="groupSelectorSection">
+
+                <p class="sidebar-label">Select Group</p>
+
+                <label for="groupSelect" class="sr-only">
+                    Select a group
+                </label>
+
+                <select id="groupSelect">
+                    <option value="">Loading groups...</option>
+                </select>
+
+            </div>
+
+            <!-- Leader selector -->
+            <div class="sidebar-section hidden" id="leaderSelectorSection">
+
+                <p class="sidebar-label">Select Leader</p>
+
+                <label for="leaderSelect" class="sr-only">
+                    Select a leader
+                </label>
+
+                <select id="leaderSelect">
+                    <option value="">Select a leader</option>
+                </select>
+
+            </div>
+
+            <!-- Person selector -->
+            <div class="sidebar-section hidden" id="personSelectorSection">
+
+                <p class="sidebar-label">Select Person</p>
+
+                <label for="personSelect" class="sr-only">
+                    Select a person
+                </label>
+
+                <select id="personSelect">
+                    <option value="">Select a person</option>
+                </select>
+
+            </div>
+
+            <div class="sidebar-footer">
+
+                <div class="connection-status">
+                    <span id="statusDot" class="status-dot loading"></span>
+
+                    <div>
+                        <strong id="statusTitle">Connecting...</strong>
+                        <span id="statusText">
+                            Loading data
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+        <main class="main-content">
+
+            <header class="topbar">
+
+                <div>
+                    <p class="eyebrow">Tentmaker Open</p>
+
+                    <h2 id="pageTitle">
+                        Groups
+                    </h2>
+
+                    <p id="pageSubtitle" class="page-subtitle">
+                        Browse group members and group posts.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    id="retryButton"
+                    class="button secondary hidden"
+                >
+                    Try Again
+                </button>
+
+            </header>
+
+
+            <!-- Loading -->
+            <section
+                id="loadingState"
+                class="state-card"
+                aria-live="polite"
+            >
+                <div class="spinner"></div>
+
+                <h3>Loading data...</h3>
+
+                <p>
+                    Connecting to the provided Google Sheet.
+                </p>
+            </section>
+
+
+            <!-- Error -->
+            <section
+                id="errorState"
+                class="state-card error-state hidden"
+                aria-live="assertive"
+            >
+                <div class="state-icon">!</div>
+
+                <h3>Unable to load the data</h3>
+
+                <p id="errorMessage">
+                    Something went wrong while loading the Google Sheet.
+                </p>
+
+                <button
+                    type="button"
+                    id="errorRetryButton"
+                    class="button primary"
+                >
+                    Try Again
+                </button>
+            </section>
+
+
+            <!-- Actual application -->
+            <section
+                id="appContent"
+                class="content-area hidden"
+            >
+
+                <!-- Group view -->
+                <div id="groupsView" class="view">
+
+                    <div class="view-header">
+
+                        <div>
+                            <p class="eyebrow">Group Roster</p>
+
+                            <h3 id="groupViewTitle">
+                                Select a group
+                            </h3>
+
+                            <p id="groupViewSubtitle">
+                                Choose a group to see its roster and board.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="stats-grid">
+
+                        <article class="stat-card">
+                            <span class="stat-label">Period</span>
+                            <strong id="groupPeriod">—</strong>
+                        </article>
+
+                        <article class="stat-card">
+                            <span class="stat-label">Leader</span>
+                            <strong id="groupLeader">—</strong>
+                        </article>
+
+                        <article class="stat-card">
+                            <span class="stat-label">Members</span>
+                            <strong id="memberCount">0</strong>
+                        </article>
+
+                        <article class="stat-card">
+                            <span class="stat-label">Posts</span>
+                            <strong id="postCount">0</strong>
+                        </article>
+
+                    </div>
+
+
+                    <div class="two-column-layout">
+
+                        <!-- Roster -->
+                        <section class="panel">
+
+                            <div class="panel-header">
+                                <div>
+                                    <p class="eyebrow">People</p>
+                                    <h4>Group Roster</h4>
+                                </div>
+                            </div>
+
+                            <div
+                                id="rosterList"
+                                class="list-container"
+                            ></div>
+
+                        </section>
+
+
+                        <!-- Board -->
+                        <section class="panel">
+
+                            <div class="panel-header">
+                                <div>
+                                    <p class="eyebrow">Messages</p>
+                                    <h4>Group Board</h4>
+                                </div>
+                            </div>
+
+                            <div
+                                id="groupPostsList"
+                                class="post-list"
+                            ></div>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Leader view -->
+                <div id="leadersView" class="view hidden">
+
+                    <div class="view-header">
+
+                        <div>
+                            <p class="eyebrow">Leader Channel</p>
+
+                            <h3 id="leaderViewTitle">
+                                Select a leader
+                            </h3>
+
+                            <p id="leaderViewSubtitle">
+                                View posts shared by a leader across their groups and periods.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <section class="panel">
+
+                        <div
+                            id="leaderChannelList"
+                            class="post-list"
+                        ></div>
+
+                    </section>
+
+                </div>
+
+
+                <!-- History view -->
+                <div id="historyView" class="view hidden">
+
+                    <div class="view-header">
+
+                        <div>
+                            <p class="eyebrow">Membership History</p>
+
+                            <h3 id="historyViewTitle">
+                                Select a person
+                            </h3>
+
+                            <p id="historyViewSubtitle">
+                                View past groups and leader channels available through past membership.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="two-column-layout">
+
+                        <!-- Groups history -->
+                        <section class="panel">
+
+                            <div class="panel-header">
+                                <div>
+                                    <p class="eyebrow">Past Memberships</p>
+                                    <h4>Groups</h4>
+                                </div>
+                            </div>
+
+                            <div
+                                id="historyGroupsList"
+                                class="history-list"
+                            ></div>
+
+                        </section>
+
+
+                        <!-- Leader channels -->
+                        <section class="panel">
+
+                            <div class="panel-header">
+                                <div>
+                                    <p class="eyebrow">Continued Access</p>
+                                    <h4>Leader Channels</h4>
+                                </div>
+                            </div>
+
+                            <div
+                                id="historyLeadersList"
+                                class="history-list"
+                            ></div>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>
